@@ -1,0 +1,135 @@
+body{
+    margin: 0;
+    background-color: #ffffff;
+    font-family: "Helvetica", "Arial", sans-serif;
+}
+
+.header{
+    background: #fbc2eb; 
+    background: linear-gradient(45deg,  #fbc2eb 0%,#a18cd1 100%);
+}
+
+.container{
+    max-width: 75%;
+    margin: 0 auto;
+}
+.main-menu {
+    font-size: 1em;
+    font-weight: bold;
+    padding: 20px 0;
+}
+
+.navigation {
+    text-decoration: none;
+    color: black;
+    margin-right: 10px;
+}
+
+#underline {
+    text-decoration: none;
+    color: white;
+    margin-right: 10px;
+}
+
+.main-menu a:hover{
+    transition: color 0.5s;
+    color: #8966db;
+}
+
+.name {
+    text-transform: uppercase;
+
+}
+main p {
+    text-align: justify;
+
+}
+
+.avatar{
+    height: 350px;
+    text-align: center;
+    margin: 3rem 0;
+    background-image: url(../images/background.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.avatar img {
+    height: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.btn {
+    text-decoration: none;
+    color: #333333;
+    font-weight: bold;
+    border: 2px solid #333333;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    transition: color 0.5s, border-color 0.5s;
+    color: #8966db;
+    border-color: #8966db;
+}
+
+.contact-me-btn {
+    color: black;
+    border-color: black;
+    font-size: 1.2rem;
+    display: inline-block;
+}
+.py-5 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.w-50 {
+    max-width: 50%;
+}
+
+.my-3 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+.footer{
+    background-color: black;
+    color: white;
+    padding: 40px 0;
+    margin-top: 2rem;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+    position: fixed;
+}
+
+.level {
+    margin: 4px 0 16px;
+    padding: 0;
+    height: 14px;
+    font-size: 0;
+    background-color: #ffffff;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.level div {
+    margin: 1px;
+    height: 12px;
+    background: #7742b2; 
+    background: linear-gradient(225deg,  #7742b2 0%,#ffa768 0%,#66329c 100%);
+    border-radius: 6px;
+  }
