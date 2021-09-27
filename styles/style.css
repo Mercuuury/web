@@ -100,6 +100,7 @@ html, body {
 .card__header {
   font-size: 3rem;
   font-weight: 500;
+  line-height: 3rem;
   color: #0d0d0d;
   margin-bottom: 1.5rem;
 }
@@ -130,6 +131,10 @@ html, body {
   transition: 0.2s;
   cursor: pointer;
 }
+.card__btn:hover {
+  color: #1b2c62;
+}
+
 
 
 .footer {
