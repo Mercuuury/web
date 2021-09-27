@@ -132,7 +132,7 @@ html, body {
   cursor: pointer;
 }
 .card__btn:hover {
-  color: #1b2c62;
+  background-color: #1b2c62;
 }
 
 
