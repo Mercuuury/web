@@ -12,8 +12,10 @@
                 <input type="password" name="password" id="password" required>
             </div>
             <div>
-                <input class="button" type="submit" value="Войти">  
+                <input type="checkbox" name="remember-me" id="remember-me">
+                <label for="remember-me">Запомнить меня</label>
             </div>
+            <input class="button" type="submit" value="Войти">  
         </form>
     </div>
 </body>

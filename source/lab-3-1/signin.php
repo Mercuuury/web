@@ -9,12 +9,13 @@
         <div class="login__form">
             <?php
                 if ($_POST['login'] == $login & $_POST['password'] == $password) {
-                    echo '<p>Добро пожаловать, '.$_POST['login'].'</p>';
+                    echo '<p>Авторизация прошла успешно!</p>';
+                    echo '<a class="button" href="index.php">Выход</a>';
                 } else {
                     echo '<p>Неверное имя пользователя и пароль</p>';
                     echo '<a class="button" href="index.php">Ввести снова</a>';
                 }
-            ?>
+            ?>  
         </div>
     </div>
 </body>
