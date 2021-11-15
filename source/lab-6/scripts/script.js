@@ -31,10 +31,11 @@ function checkWinner() {
 
 let turn = 0;
 let steps = 0;
+let gameover = 0;
 function clickHandler(event) {
     if (event.target.innerHTML != '')
-        alert('Эта кнопка занята!');
-    else {
+        showMessage('Эта кнопка занята!', 'error');
+    else if (!gameover){
         event.target.innerHTML = turn == 0 ? 'O' : 'X';
         turn = (turn + 1) % 2;
         steps++;
@@ -43,18 +44,16 @@ function clickHandler(event) {
         else
             document.getElementById('turn').innerHTML = 'Ходит крестик';
     }
-    winner = checkWinner();
-    if (winner || steps == 9) {
-        alert(winner ? `Победитель - ${winner} !` : 'Ничья!');
-        alert('Игра окончена.');
-    }
-        
-}
 
-window.onload = function() {
-    let board = initBoard();
-    board.onclick = clickHandler;
-    document.getElementById('turn').innerHTML = 'Ходит ноль';
+    if(steps == 9 || gameover) 
+        showMessage('Игра окончена.', 'error');
+
+    winner = checkWinner();
+    if (winner) {
+        showMessage(winner ? `Победитель - ${winner} !` : 'Ничья!');
+        gameover = 1;
+    }
+          
 }
 
 function resetGame() {
@@ -62,4 +61,21 @@ function resetGame() {
         element.innerHTML = '';
     });
     steps = 0;
+    gameover = 0;
+}
+
+function showMessage(msg, category = 'success') {
+    let msgContainer = document.querySelector('.message');
+    let msgElement = document.createElement('div');
+    msgElement.classList.add('message');
+    msgElement.classList.add(category);
+    msgElement.innerHTML = msg;
+    msgContainer.append(msgElement);
+    setTimeout(() => msgContainer.removeChild(msgContainer.firstChild), 2000); 
+}
+
+window.onload = function() {
+    let board = initBoard();
+    board.onclick = clickHandler;
+    document.getElementById('turn').innerHTML = 'Ходит ноль';
 }
