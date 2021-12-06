@@ -9,10 +9,65 @@
     <title>Cat facts</title>
 </head>
 <body>
-    <div class="container">
-        <div class="facts-list" data-url="https://catfact.ninja/facts?limit=100">
+    <header class="header">
+        <nav class="header-nav">
+            <img class="logotip" src="images/cat_w.png">
+            <div class="title">
+                Facts about cats
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <div class="search-form">
+                <input type="text" class="search-field">
+                <button class="search-btn" onclick="searchBtnHandler()">Найти</button>
+            </div>
+            <div class="pagination-info">
+                <span>Показать по
+                    <select name="per-page" id="" class="per-page-btn">
+                        <option>5</option>
+                        <option selected>10</option>
+                        <option>15</option>
+                        <option>20</option>
+                        <option>25</option>
+                        <option>50</option>
+                        <option>100</option>
+                    </select>
+                     записей на странице
+                </span>
+                <span class="current-interval-info">
+                    Показаны записи с <span class="current-interval-start">1</span> по <span class="current-interval-end">10</span>
+                     из <span class="total-count">191</span>
+                </span>
+            </div>
+            <div class="facts-list" data-url="http://cat-facts-api.std-900.ist.mospolytech.ru/facts">
+                <div class="facts-list-item">
+                    <div class="item-content">
+                        A cat can die from essential oils
+                    </div>
+                    <div class="footer">
+                        <div class="author-name">
+                            Alex Wohlbruck
+                        </div>
+                        <div class="upvotes">
+                            4
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <!-- <button class="btn first-page-btn" data-page="1">Первая страница</button>
+                <div class="pages-btn">
+                    <button class="btn active" data-page="1">1</button>
+                    <button class="btn" data-page="2">2</button>
+                    <button class="btn" data-page="3">3</button>
+                </div>
+                <button class="btn last-page-btn">Последняя страница</button> -->
+            </div>
 
         </div>
-    </div>
+    </main>
 </body>
 </html>

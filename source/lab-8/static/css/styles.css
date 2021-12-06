@@ -1,0 +1,17 @@
+.banner {
+    background-color: #eaecf0;
+}
+
+.call-to-action {
+    background-color: #011627;
+    color: white;
+}
+
+.technologies .image-fluid {
+    height: 300px;
+}
+
+.dark {
+    background-color: #011627;
+    color: #83F3E9;
+}
