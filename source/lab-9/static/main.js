@@ -1,6 +1,7 @@
-function showAlert(msg) {
+function showAlert(msg, type) {
     let alertsContainer = document.querySelector('.alerts');
     let newAlert = document.querySelector('.alert').cloneNode(true);
+    newAlert.classList.add('alert-' + type);
     newAlert.querySelector('.msg').innerHTML = msg;
     newAlert.classList.remove('d-none');
     alertsContainer.append(newAlert);
@@ -11,6 +12,8 @@ function moveBtnHandler(event) {
     let currentTable = event.target.closest('tbody');
     let targetTable = document.getElementById(currentTable.id == 'to-do-list' ? 'done-list' : 'to-do-list');
 
+    moveTask(taskElement.id, currentTable.id == 'to-do-list' ? 'done' : 'to-do');
+
     let taskCounterElement = taskElement.closest('.card').querySelector('.task-counter');
     taskCounterElement.innerHTML = Number(taskCounterElement.innerHTML) - 1;
 
@@ -18,6 +21,7 @@ function moveBtnHandler(event) {
 
     taskCounterElement = taskElement.closest('.card').querySelector('.task-counter');
     taskCounterElement.innerHTML = Number(taskCounterElement.innerHTML) + 1;
+    
 }
 
 function createTaskElement(form) {
@@ -47,14 +51,17 @@ function updateTask(form) {
     taskElement.querySelector('.task-description').textContent = form.elements['description'].value;
 }
 
-function removeTaskBtnHandler(event) {
+async function removeTaskBtnHandler(event) {
     let form = event.target.closest('.modal').querySelector('form');
     let taskElement = document.getElementById(form.elements['task-id'].value);
-
-    let taskCounterElement = taskElement.closest('.card').querySelector('.task-counter');
-    taskCounterElement.innerHTML = Number(taskCounterElement.innerHTML) - 1;
-
-    taskElement.remove();
+    let responseStatus = await deleteTask(form.elements['task-id'].value);
+    if (responseStatus == 200) {
+        let taskCounterElement = taskElement.closest('.card').querySelector('.task-counter');
+        taskCounterElement.innerHTML = Number(taskCounterElement.innerHTML) - 1;
+    
+        taskElement.remove();
+        showAlert('Задача удалена', 'success');
+    }
 }
 
 function resetForm(form) {
@@ -64,25 +71,34 @@ function resetForm(form) {
     form.elements['description'].classList.remove('form-control-plaintext');
 }
 
-function actionTaskBtnHandler(event) {
+async function actionTaskBtnHandler(event) {
     let alertMsg;
     let form = this.closest('.modal').querySelector('form');
     let action = form.elements['action'].value;
     
     if (action == 'new') {
         let taskElement = document.getElementById(`${form.elements['column'].value}-list`);
-        taskElement.append(createTaskElement(form));
-        alertMsg = `Задача ${form.elements['name'].value} добавлена успешно!`;
-        form.reset();
-
-        let taskCounterElement = taskElement.closest('.card').querySelector('.task-counter');
-        taskCounterElement.innerHTML = Number(taskCounterElement.innerHTML) + 1;
+        let newTaskElement = createTaskElement(form);
+        let responseStatus = await submitTask(form);
+        if (responseStatus == 200) {
+            taskElement.append(newTaskElement);
+            alertMsg = `Задача ${form.elements['name'].value} добавлена успешно!`;
+        
+            let taskCounterElement = taskElement.closest('.card').querySelector('.task-counter');
+            taskCounterElement.innerHTML = Number(taskCounterElement.innerHTML) + 1;
+            form.reset();
+        }
     } else if (action == 'edit') {
-        updateTask(form);
-        alertMsg = `Задача ${form.elements['name'].value} обновлена успешно!`;
+        let responseStatus = await editTask(form.elements['task-id'].value, form.elements['name'].value, form.elements['description'].value);
+        if (responseStatus == 200) {
+            updateTask(form);
+            alertMsg = `Задача ${form.elements['name'].value} обновлена успешно!`;
+        }
     }
-    if (alertMsg) showAlert(alertMsg);
-    resetForm(form);
+    if (alertMsg) {
+        showAlert(alertMsg, 'success');
+        resetForm(form);
+    }
 }
 
 let taskCounter = 0;
@@ -130,4 +146,106 @@ window.onload = function () {
     });
 
     document.querySelector('.remove-task-btn').onclick = removeTaskBtnHandler;
+
+    getTasks();
+}
+
+function placeTasks(tasks) {
+    tasks.forEach(task => {
+        let newTaskElement = document.getElementById('task-template').cloneNode(true);
+        newTaskElement.id = task.id;
+        newTaskElement.querySelector('.task-name').textContent = task.name;
+        newTaskElement.querySelector('.task-description').textContent = task.desc;
+        newTaskElement.classList.remove('d-none');
+    
+        for (let btn of newTaskElement.querySelectorAll('.move-btn')) {
+            btn.onclick = moveBtnHandler;
+        }
+    
+        let taskElement = document.getElementById(`${task.status}-list`);
+        taskElement.append(newTaskElement);
+
+        let taskCounterElement = taskElement.closest('.card').querySelector('.task-counter');
+        taskCounterElement.innerHTML = Number(taskCounterElement.innerHTML) + 1;
+    });
+}
+
+function getTasks() {
+    let url = "http://tasks-api.std-900.ist.mospolytech.ru/api/tasks?api_key=50d2199a-42dc-447d-81ed-d68a443b697e";
+    fetch(url)  
+        .then(function(response) {  
+            response.json().then(function(data) {  
+                placeTasks(data.tasks);  
+            });
+        })  
+        .catch(function(error) {  
+            showAlert('Ошибка при получении списка задач с сервера', 'danger');
+        });
+}
+
+async function submitTask(form) {
+    let url = "http://tasks-api.std-900.ist.mospolytech.ru/api/tasks?api_key=50d2199a-42dc-447d-81ed-d68a443b697e";
+    let task = {
+        name: form.elements['name'].value,
+        desc: form.elements['description'].value,
+        status: form.elements['column'].value
+    };
+    
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            body: 'name=' + task.name + '&desc=' + task.desc + '&status=' + task.status + ''
+        });
+        return response.status;  
+    } catch (error) {
+        showAlert('Ошибка при отправке задачи на сервер', 'danger');
+    }
+}
+
+async function deleteTask(id) {
+    let url = "http://tasks-api.std-900.ist.mospolytech.ru/api/tasks/" + id + "?api_key=50d2199a-42dc-447d-81ed-d68a443b697e";
+
+    try {
+        const response = await fetch(url, { method: 'DELETE' });
+        return response.status;
+    } catch (error) {
+        showAlert('Ошибка при удалении задачи с сервера', 'danger');
+    }
+}
+
+async function moveTask(id, status) {
+    let url = "http://tasks-api.std-900.ist.mospolytech.ru/api/tasks/"+ id +"?api_key=50d2199a-42dc-447d-81ed-d68a443b697e";
+    
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            body: 'status=' + status + ''
+        });
+        return response.status;
+    } catch (error) {
+        showAlert('Ошибка при перемещении задачи на сервере', 'danger');
+    }
+}
+
+async function editTask(id, name, desc) {
+    let url = "http://tasks-api.std-900.ist.mospolytech.ru/api/tasks/"+ id +"?api_key=50d2199a-42dc-447d-81ed-d68a443b697e";
+    
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            body: 'name=' + name + '&desc=' + desc + ''
+        });
+        return response.status;
+    } catch (error) {
+        showAlert('Ошибка при обновлении задачи на сервере', 'danger');
+    }
 }
